@@ -9,14 +9,15 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "flex-api-ios-sdk"
-  spec.version      = "1.0.0"
+  spec.version      = "411"
   spec.summary      = "Cybersource Flex V2 iOS SDK."
   spec.description  = "This SDK allows mobile developers to provide credit card payment functionality within their iOS applications, without having to pass sensitive card data back to their application backend servers."
   spec.homepage     = "https://github.com/CyberSource/flex-api-ios-sdk"
   spec.license      = "MIT"
   spec.author       = { "Cybersource" => "www.cybersource.com" }
   spec.platform     = :ios, "13.0"
-  spec.source       = { :git => "https://github.com/CyberSource/flex-api-ios-sdk.git" }
+  spec.source       = { :git => "https://github.com/JoshR604/flex-api-ios-sdk", :tag => s.version }
+  # spec.source       = { :git => "https://github.com/CyberSource/flex-api-ios-sdk.git" }
 
   # spec.source       = { :git => "http://EXAMPLE/flex-api-ios-sdk.git", :tag => "#{spec.version}" }
   spec.source_files  = "flex-api-ios-sdk/**/*.{h,m,swift,modulemap}"
