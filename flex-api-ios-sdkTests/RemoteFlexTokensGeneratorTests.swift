@@ -170,6 +170,7 @@ class RemoteFlexTokensGeneratorTests: XCTestCase {
     }
 
     private class HTTPClientSpy: HTTPClient {
+        
         private var messages = [(url: URL, completion: (HTTPClient.Result) -> Void)]()
 
         var requestedURLs: [URL] {
@@ -177,6 +178,10 @@ class RemoteFlexTokensGeneratorTests: XCTestCase {
         }
 
         func post(from url: URL, payload: Data, completion: @escaping (HTTPClient.Result) -> Void ) {
+            messages.append((url, completion))
+        }
+        
+        func get(from url: URL, completion: @escaping (Result) -> Void) {
             messages.append((url, completion))
         }
         
