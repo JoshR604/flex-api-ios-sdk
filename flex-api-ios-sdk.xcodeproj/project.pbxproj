@@ -104,6 +104,8 @@
 		A0EF5787264BFA790082BE26 /* CryptoTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0EF5786264BFA790082BE26 /* CryptoTestCase.swift */; };
 		A0EF578D264BFC250082BE26 /* TestKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = A0EF578C264BFC250082BE26 /* TestKeys.plist */; };
 		A0EF5799264C00400082BE26 /* RSAKeyManagementModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0EF5798264C00400082BE26 /* RSAKeyManagementModeTests.swift */; };
+		D335C81B29EA0D6E00E8CB40 /* RemoteFlexPublicKeyGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D335C81A29EA0D6E00E8CB40 /* RemoteFlexPublicKeyGenerator.swift */; };
+		D335C81D29EA10D200E8CB40 /* FlexPublicKeyGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D335C81C29EA10D200E8CB40 /* FlexPublicKeyGenerator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -221,6 +223,8 @@
 		A0EF5786264BFA790082BE26 /* CryptoTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoTestCase.swift; sourceTree = "<group>"; };
 		A0EF578C264BFC250082BE26 /* TestKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestKeys.plist; sourceTree = "<group>"; };
 		A0EF5798264C00400082BE26 /* RSAKeyManagementModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSAKeyManagementModeTests.swift; sourceTree = "<group>"; };
+		D335C81A29EA0D6E00E8CB40 /* RemoteFlexPublicKeyGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteFlexPublicKeyGenerator.swift; sourceTree = "<group>"; };
+		D335C81C29EA10D200E8CB40 /* FlexPublicKeyGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlexPublicKeyGenerator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -314,6 +318,7 @@
 				A0C3D457264A997F0071DB05 /* RemoteFlexTokenMapper.swift */,
 				A0C3D458264A997F0071DB05 /* HTTPClient.swift */,
 				A0C3D459264A997F0071DB05 /* RemoteFlexTokensGenerator.swift */,
+				D335C81A29EA0D6E00E8CB40 /* RemoteFlexPublicKeyGenerator.swift */,
 			);
 			path = "FlexTokens API";
 			sourceTree = "<group>";
@@ -464,6 +469,7 @@
 				A0C3D4C2264A99800071DB05 /* FlexTokensGenerator.swift */,
 				A0C3D4C3264A99800071DB05 /* CaptureContext.swift */,
 				A0C3D4C4264A99800071DB05 /* HttpResponse.swift */,
+				D335C81C29EA10D200E8CB40 /* FlexPublicKeyGenerator.swift */,
 			);
 			path = "FlexTokens Feature";
 			sourceTree = "<group>";
@@ -673,6 +679,7 @@
 				A0C3D4C9264A99800071DB05 /* RemoteFlexTokenMapper.swift in Sources */,
 				A0C3D4EA264A99800071DB05 /* CybsFlexJWTClaims.swift in Sources */,
 				A0C3D4F6264A99800071DB05 /* CybsAGBitwiseComponents.m in Sources */,
+				D335C81B29EA0D6E00E8CB40 /* RemoteFlexPublicKeyGenerator.swift in Sources */,
 				A0C3D502264A99800071DB05 /* Encrypter.swift in Sources */,
 				A0C3D4D6264A99800071DB05 /* Base64.m in Sources */,
 				A0C3D4E4264A99800071DB05 /* JWTVerifier.swift in Sources */,
@@ -718,6 +725,7 @@
 				A0C3D4CD264A99800071DB05 /* TransientToken.swift in Sources */,
 				A0C3D4E6264A99800071DB05 /* JWTError.swift in Sources */,
 				A0C3D4CE264A99800071DB05 /* FlexInternalErrors.swift in Sources */,
+				D335C81D29EA10D200E8CB40 /* FlexPublicKeyGenerator.swift in Sources */,
 				A0C3D50A264A99800071DB05 /* JWESwiftError.swift in Sources */,
 				A0C3D4DC264A99800071DB05 /* CryptoUtils.swift in Sources */,
 				A0C3D4E9264A99800071DB05 /* Data+Base64URLEncoded.swift in Sources */,

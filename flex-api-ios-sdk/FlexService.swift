@@ -11,11 +11,13 @@ public class FlexService: FlexServiceProtocol {
     
     private var captureContext: CaptureContext?
     private var tokenGenerator: FlexTokensGenerator
+    private var publicKeyGenerator: FlexPublicKeyGenerator
         
     static func standardClient() -> FlexServiceProtocol {
         let httpClient = URLSessionHTTPClient()
         let tokenGenerator = RemoteFlexTokensGenerator(client: httpClient)
-        return FlexService(tokenGenerator: tokenGenerator)
+        let publicKeyGenerator = RemoteFlexPublicKeyGenerator(client: httpClient)
+        return FlexService(tokenGenerator: tokenGenerator, publicKeyGenerator: publicKeyGenerator)
     }
     
     public typealias Result = Swift.Result<TransientToken, FlexErrorResponse>
@@ -29,22 +31,38 @@ public class FlexService: FlexServiceProtocol {
     public init() {
         let httpClient = URLSessionHTTPClient()
         self.tokenGenerator = RemoteFlexTokensGenerator(client: httpClient)
+        self.publicKeyGenerator = RemoteFlexPublicKeyGenerator(client: httpClient)
     }
     
-    init(tokenGenerator: RemoteFlexTokensGenerator) {
+    init(tokenGenerator: RemoteFlexTokensGenerator, publicKeyGenerator: FlexPublicKeyGenerator) {
         self.tokenGenerator = tokenGenerator
+        self.publicKeyGenerator = publicKeyGenerator
     }
     
-    init(captureContext: CaptureContext, tokenGenerator: FlexTokensGenerator) {
+    init(captureContext: CaptureContext, tokenGenerator: FlexTokensGenerator, publicKeyGenerator: FlexPublicKeyGenerator) {
         self.captureContext = captureContext
         self.tokenGenerator = tokenGenerator
+        self.publicKeyGenerator = publicKeyGenerator
     }
         
-    public func flexPublicKey(kid: String) -> SecKey? {
-        return LongTermKey.sharedInstance.get(kid: kid)
+//    public func flexPublicKey(kid: String) -> SecKey? {
+//        return LongTermKey.sharedInstance.get(kid: kid)
+//    }
+    
+    public func flexPublicKey(url: URL, completion: @escaping (SecKey?) -> Void) {
+            
+        self.publicKeyGenerator.getPublicKey(url: url) { result in
+            
+            switch result {
+            case let .success(publicSecKey):
+                completion(publicSecKey)
+            case .failure:
+                completion(nil)
+            }
+        }
     }
 
-    public func createTransientToken(from captureContext: String, data: [String: Any], completion: @escaping (Result) -> Void) {
+    public func createTransientToken(from captureContext: String, publicKey: SecKey, data: [String: Any], completion: @escaping (Result) -> Void) {
         if captureContext.isEmpty {
             completion(.failure(FlexInternalErrors.emptyCaptureContext.errorResponse))
             return
@@ -52,8 +70,9 @@ public class FlexService: FlexServiceProtocol {
             completion(.failure(FlexInternalErrors.emptyCardData.errorResponse))
             return
         }
+        
         do {
-            try self.captureContext = CaptureContextImpl(from: captureContext)
+            try self.captureContext = CaptureContextImpl(from: captureContext, publicKey: publicKey)
         } catch let error as FlexErrorResponse {
             completion(.failure(error))
             return

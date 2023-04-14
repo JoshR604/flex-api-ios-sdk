@@ -15,7 +15,7 @@ class FlexServiceEndToEndTest: XCTestCase {
     func testTransientToken() {
         let service = FlexService()
         
-        service.createTransientToken(from: cc, data: getPayloadData()) { (result) in
+        service.createTransientToken(from: cc, publicKey: <#SecKey#>, data: getPayloadData()) { (result) in
             switch result {
             case .success:
                 print("success")

@@ -12,7 +12,7 @@ class CaptureContextImpl {
     var src: String
     var jwt: JWT<JWTClaims>
 
-    init(from jwt: String) throws {
+    init(from jwt: String, publicKey: SecKey) throws {
         self.src = jwt
         
         let rsaJWTDecoder = JWTDecoder(jwtVerifier: .none)
@@ -26,9 +26,7 @@ class CaptureContextImpl {
             throw FlexInternalErrors.jwtDateValidationError.errorResponse
         }
         
-        guard let kid = self.jwt.header.kid,
-              let publicKey = LongTermKey.sharedInstance.get(kid: kid),
-              JWT<JWTClaims>.self.verify(jwt, using: .rs256(publicKey: publicKey)) else {
+        guard JWT<JWTClaims>.self.verify(jwt, using: .rs256(publicKey: publicKey)) else {
             throw FlexInternalErrors.jwtSignatureValidationError.errorResponse
         }
     }    
@@ -36,7 +34,6 @@ class CaptureContextImpl {
 
 extension CaptureContextImpl: CaptureContext {
     
-    //TODO: remove all force unwrapping
     func getPublicKey() throws -> SecKey? {
         let flexPublicKey = getJsonWebKey()
         
@@ -44,37 +41,39 @@ extension CaptureContextImpl: CaptureContext {
               let eStr = flexPublicKey?.e else {
             throw FlexInternalErrors.jweInvalidPublicKey.errorResponse
         }
-          
+        
         //Padding required
         nStr = nStr.replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
-          if nStr.count % 4 == 2 {
-           nStr.append("==")
-          }
-          if nStr.count % 4 == 3 {
-           nStr.append("=")
-          }
-          let nBytes = Data(base64Encoded: nStr)
-          /*Same with e*/
-          let eBytes = Data(base64Encoded: eStr)
-          
+        if nStr.count % 4 == 2 {
+            nStr.append("==")
+        }
+        if nStr.count % 4 == 3 {
+            nStr.append("=")
+        }
+        
+        guard let nBytes = Data(base64Encoded: nStr),
+              let eBytes = Data(base64Encoded: eStr) else {
+            throw FlexInternalErrors.jweInvalidPublicKey.errorResponse
+        }
+        
         //Now this bytes we have to append such that [48, 130, 1, 10, 2, 130, 1, 1, 0, /* nBytes */, 0x02 , 0x03 ,/* eBytes */ ]
         var padding1 = Data([0x030,0x82,0x01,0x0a,0x02,0x82,0x01,0x01])
         let padding2 = Data([0x02,0x03])
-        if nBytes?[0] != 0 {
+        if nBytes[0] != 0 {
             padding1.append([0x00], count: 1)
         }
         var keyData = Data(padding1)
-        keyData.append(nBytes!)
+        keyData.append(nBytes)
         keyData.append(padding2)
-        keyData.append(eBytes!)
+        keyData.append(eBytes)
         let attributes: [String: Any] = [
-                    kSecAttrKeyType as String: kSecAttrKeyTypeRSA,
-                    kSecAttrKeyClass as String: kSecAttrKeyClassPublic,
-                    kSecAttrKeySizeInBits as String: 2048,
-                    kSecAttrIsPermanent as String: false
-                ]
-                var error: Unmanaged<CFError>?
-        let keyReference = SecKeyCreateWithData(keyData as CFData, attributes as CFDictionary, &error)!
+            kSecAttrKeyType as String: kSecAttrKeyTypeRSA,
+            kSecAttrKeyClass as String: kSecAttrKeyClassPublic,
+            kSecAttrKeySizeInBits as String: 2048,
+            kSecAttrIsPermanent as String: false
+        ]
+        var error: Unmanaged<CFError>?
+        let keyReference = SecKeyCreateWithData(keyData as CFData, attributes as CFDictionary, &error)
         
         return keyReference
     }

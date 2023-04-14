@@ -8,5 +8,5 @@
 import Foundation
 
 protocol FlexServiceProtocol {
-    func flexPublicKey(kid: String) -> SecKey?
+    func flexPublicKey(url: URL, completion: @escaping (SecKey?) -> Void)
 }

@@ -17,7 +17,7 @@ class URLSessionHTTPClient: HTTPClient {
     private struct UnexpectedValuesRepresentation: Error {}
 
     func post(from url: URL, payload: Data, completion: @escaping (HTTPClient.Result) -> Void) {
-        session.dataTask(with: getRequest(from: url, payload: payload)) { data, response, error in
+        session.dataTask(with: postRequest(from: url, payload: payload)) { data, response, error in
             if let error = error {
                 completion(.failure(error))
             } else if let data = data, let response = response as? HTTPURLResponse {
@@ -28,7 +28,30 @@ class URLSessionHTTPClient: HTTPClient {
         }.resume()
     }
     
-    private func getRequest(from url: URL, payload: Data) -> URLRequest {
+    func get(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) {
+        session.dataTask(with: getRequest(from: url)) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+            } else if let data = data, let response = response as? HTTPURLResponse {
+                completion(.success((data, response)))
+            } else {
+                completion(.failure(UnexpectedValuesRepresentation()))
+            }
+        }.resume()
+    }
+    
+    private func getRequest(from url: URL) -> URLRequest {
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: HTTPHeaders.AcceptFieldKey)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: HTTPHeaders.ContentTypeFieldKey)
+        request.setValue("iOS", forHTTPHeaderField: HTTPHeaders.UserAgentKey)
+        
+        return request
+    }
+    
+    private func postRequest(from url: URL, payload: Data) -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = payload
